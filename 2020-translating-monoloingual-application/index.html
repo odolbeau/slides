@@ -1,0 +1,538 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>reveal.js</title>
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/solarized.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h2>Translating a monolingual application</h2>
+          <p>💕 AFUP - February, 2020 💕</p>
+        </section>
+
+        <section>
+          <h2>👋 Hi, I'm Olivier Dolbeau</h2>
+        </section>
+
+        <section>
+          <h2><span class="fragment highlight-red">Translating</span> a monolingual application</h2>
+          <p>💕 AFUP - February, 2020 💕</p>
+        </section>
+
+        <section data-background="images/russian-dolls.jpeg" data-background-size="contain">
+        </section>
+
+        <section>
+          <h2>g11n > i18n > l10n > t8n</h2>
+          <ul>
+            <li>Globalization</li>
+            <ul>
+              <li>Internationalization</li>
+              <ul>
+                <li>Localization</li>
+                <ul>
+                  <li>Translation</li>
+                </ul>
+              </ul>
+            </ul>
+          </ul>
+          <p>
+          There all <b>numeronyms</b>.<br />
+          <small><em>I hope you learned something today! 🎉</em></small>
+          </p>
+        </section>
+
+        <section>
+          <h2>Globalization</h2>
+          <blockquote style="font-size: 0.9em">
+            The term Globalization(g11n) comes into play when a company wants to expand their market outside of their locale place and move into a global market.Globalization is simply the umbrella term used to describe the process of bringing i18n and l10n into your product.
+            <br />
+            <a href="https://medium.com/@vivekmadurai/internationalization-i18n-vs-localization-l10n-d1719125778f" style="float: right">
+              Vivek Madurai
+            </a>
+            <div style="clear: both"></div>
+          </blockquote>
+        </section>
+
+        <section>
+          <h2>Internationalization</h2>
+          <blockquote style="font-size: 0.9em">
+              To put it in simple words Internationalization is a process of designing and developing a product so that it can be easily localized for various target markets without any engineering dependency. <u>For example</u>, taking decision on encoding characters stored in your database in Unicode like utf-8 instead of latin-1, moving messages to resources files, handling timestamps across timezones
+            <br />
+            <a href="https://medium.com/@vivekmadurai/internationalization-i18n-vs-localization-l10n-d1719125778f" style="float: right">
+              Vivek Madurai
+            </a>
+            <div style="clear: both"></div>
+          </blockquote>
+        </section>
+
+        <section>
+          <h2>Localization</h2>
+          <blockquote style="font-size: 0.9em">
+            The term Localization refers to the adoption of a product to a specific language or culture(country/region). Localizing a product includes language translation, number formatting, date formats, currency, look and feel etc.
+            <br />
+            <a href="https://medium.com/@vivekmadurai/internationalization-i18n-vs-localization-l10n-d1719125778f" style="float: right">
+              Vivek Madurai
+            </a>
+            <div style="clear: both"></div>
+          </blockquote>
+        </section>
+
+        <section>
+          <h2>Translation</h2>
+          <pre><code class="php">
+translate('a_beer_please', 'en'); // A beer please
+translate('a_beer_please', 'fr'); // Une bière s'il vous plaît
+translate('a_beer_please', 'ar'); // بيرة لو سمحت
+translate('a_beer_please', 'ta'); // தயவுசெய்து ஒரு பீர்
+          </code></pre>
+        </section>
+
+        <section data-background="images/russian-dolls.jpeg" data-background-size="contain">
+        </section>
+
+        <section>
+          <h2>💪 Looks simple!</h2>
+          <img src="https://media.giphy.com/media/dWy2WwcB3wvX8QA1Iu/giphy.gif" />
+        </section>
+
+        <section>
+          <h2>😥 But it's not...</h2>
+          <img src="images/iceberg.jpeg" />
+        </section>
+
+        <section>
+          <h2>😞 Problem #1</h2>
+          <h3>Variables translations</h3>
+        </section>
+
+        <section>
+          <h2>Plural?</h2>
+          <pre><code class="php">
+if (0 === $beers) {
+    translate('no_beer', 'fr'); // Je n'ai pas bu de bière
+} elseif (1 === $beers) {
+    translate('one_beer', 'fr'); // J'ai bu une bière
+} else {
+    translate('more_beer', 'fr'); // J'ai bu plusieurs bières
+}
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Gender?</h2>
+          <pre><code class="php">
+if ('female' === $gender) {
+    translate('women_drink', 'fr'); // C'est une grosse buveuse.
+} elseif ('male' === $gender) {
+    translate('men_drink', 'fr'); // C'est un gros buveur.
+}
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Combined?</h2>
+          <pre><code class="php" style="font-size: 0.7em; line-height: 1.35em">
+if ('female' === $gender) {
+    if (0 === $beers) {
+        translate('women_no_beer', 'fr'); // Elle n'a pas bu de bière
+    } elseif (1 === $beers) {
+        translate('women_one_beer', 'fr'); // Elle a bu une bière
+    } else {
+        translate('women_more_beer', 'fr'); // Elle a bu plusieurs bières
+    }
+} elseif ('male' === $gender) {
+    if (0 === $beers) {
+        translate('men_no_beer', 'fr'); // Il n'a pas bu de bière
+    } elseif (1 === $beers) {
+        translate('men_one_beer', 'fr'); // Il a bu une bière
+    } else {
+        translate('men_more_beer', 'fr'); // Il a bu plusieurs bières
+    }
+}
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>☺️  Solution</h2>
+          <h3>ICU Message format</h3>
+        </section>
+
+        <section>
+          <h2>Most simple example</h2>
+          <pre><code class="php">
+translate('drink_beer', [
+    'name' => 'Michèle',
+]);
+          </code></pre>
+
+            <pre class="fragment"><code class="json">
+{name} boit de la bière.
+            </code></pre>
+        </section>
+
+        <section>
+          <h2>Plural example</h2>
+          <pre><code class="php">
+translate('drink_beer', [
+    'beers' => 5,
+]);
+          </code></pre>
+
+            <pre class="fragment"><code class="json">
+{beers, plural,
+    =0    {Je n'ai pas bu de bière.}
+    one   {J'ai bu une bière.}
+    other {J'ai bu # bières !}
+}
+            </code></pre>
+        </section>
+
+        <section>
+          <h2>Gender example</h2>
+          <pre><code class="php">
+translate('drink_beer', [
+    'gender' => 'female',
+]);
+          </code></pre>
+
+            <pre class="fragment"><code class="json">
+{gender, select,
+    female {Tu es une grosse buveuse!}
+    male {Tu es un gros buveur!}
+    other {Tu bois beaucoup!}
+}
+            </code></pre>
+        </section>
+
+        <section>
+          <h2>Combining variables</h2>
+          <pre><code class="php">
+translate('drink_a_lot', [
+    'firstname' => 'Michèle',
+    'gender' => 'female',
+    'count' => 5,
+]);
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>ICU hell! 🤘</h2>
+          <pre><code style="font-size: 0.7em; line-height: 1.35em">
+{gender, select,
+  female {
+    {count, plural,
+      =0 {{firstname} ne boit pas.}
+      =1 {{firstname} n'est pas une grosse buveuse, elle n'a bu qu'une seule bière.}
+      other {{firstname} est une grosse buveuse, elle a bu {count} bières!}}}
+  male {
+    {count, plural,
+      =0 {{firstname} ne boit pas.}
+      =1 {{firstname} n'est pas un gros buveur, il n'a bu qu'une seule bière.}
+      other {{firstname} est un gros buveur, il a bu {count} bières!}}}
+  other {
+    {count, plural,
+      =0 {{firstname} ne boit pas.}
+      one {{firstname} a bu une seule bière.}
+      other {{firstname} a bu {count} bières!}}}}
+          </code></pre>
+
+          <small>Doc: <a href="http://userguide.icu-project.org/formatparse/messages">http://userguide.icu-project.org/formatparse/messages</a></small><br />
+          <small>More examples: <a href="https://symfony.com/doc/current/translation/message_format.html">https://symfony.com/doc/current/translation/message_format.html</a></small>
+          <small>Online editor: <a href="https://format-message.github.io/icu-message-format-for-translators/editor.html">https://format-message.github.io/icu-message-format-for-translators/editor.html</a></small>
+        </section>
+
+        <section>
+            <h2>💡 Tip: Use a translation key!</h2>
+            <img src="images/translation_good_practices.png" />
+            <small>
+                <a href="https://symfony.com/doc/current/best_practices.html#use-keys-for-translations-instead-of-content-strings">https://symfony.com/doc/current/best_practices.html#use-keys-for-translations-instead-of-content-strings</a><br />
+                <a href="https://php-translation.readthedocs.io/en/latest/best-practice/index.html">https://php-translation.readthedocs.io/en/latest/best-practice/index.html</a>
+            </small>
+        </section>
+
+        <section>
+          <h2>😞 Problem #2</h2>
+          <h3>The file based worflow</h3>
+        </section>
+
+        <section>
+            <h2>📜 File based workflow</h2>
+            <ol>
+                <li class="fragment"><strong>Developers</strong> create a translation <strong>file</strong>.</li>
+                <li class="fragment">This file is sent to <strong>translators</strong>.</li>
+                <li class="fragment"><strong>Translators</strong> send back a translated <strong>file</strong>.</li>
+                <li class="fragment"><strong>Developers</strong> integrate this <strong>file</strong> in application.</li>
+                <li class="fragment">🔁 REPEAT 🔁</li>
+            </ol>
+        </section>
+
+        <section>
+          <h2>Workflow - 2 locales</h2>
+          <img src="images/translation-simple-workflow-2-locales.svg" />
+        </section>
+
+        <section>
+          <h2>Workflow - 3 locales</h2>
+          <img src="images/translation-simple-workflow-3-locales.svg" />
+        </section>
+
+        <section>
+          <h2>Workflow - 4 locales</h2>
+          <img src="images/translation-simple-workflow-4-locales.svg" />
+        </section>
+
+        <section>
+          <h2>Workflow - 5 locales</h2>
+          <img src="images/translation-simple-workflow-5-locales.svg" />
+        </section>
+
+        <section>
+          <h2>💥 It's like super heroes movies</h2>
+          <img src="https://media.giphy.com/media/2aIZfQdC2V7bBvU5t2/giphy.gif" />
+        </section>
+
+        <section>
+            <h2>😞 Far from perfect</h2>
+            <ol>
+                <li>Time consuming for <u>developer</u></li>
+                <li class="fragment">Complicated <u>workflow</u></li>
+                <li class="fragment">Hard to deal with <u>diff</u>.</li>
+            </ol>
+        </section>
+
+        <section>
+          <h2>☺️  Solution</h2>
+          <h3>Use a SAAS product</h3>
+        </section>
+
+        <section>
+          <h2>Lot of solution exists</h2>
+          <ul>
+              <li class="fragment highlight-red">Loco (https://localise.biz/)</li>
+              <li>PhraseApp</li>
+              <li>Transifex</li>
+              <li>...</li>
+              <li>(please don't reinvent the wheel)</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Our new workflow</h2>
+          <img src="https://jolicode.com/media/original/2017/translation/04-worfklow-translation.png" width="65%" />
+
+          <small>See: <a href="https://jolicode.com/blog/how-to-properly-manage-translations-in-symfony">https://jolicode.com/blog/how-to-properly-manage-translations-in-symfony</a></small>
+        </section>
+
+        <section>
+          <h2>It solves our problems (& even more)</h2>
+          <ul>
+              <li class="fragment">👌 Developer only have to push keys, <u>nothing else</u>.</li>
+              <li class="fragment">😀 Translators now have <u>a dedicated tool</u>.</li>
+              <li class="fragment">💾 SAAS product = <u>primary data store</u></li>
+              <li class="fragment">📜 You have access to <u>the whole history</u>! \o/</li>
+              <li class="fragment">🔍 You can <u>add context</u> to translations \o/</li>
+              <li class="fragment">⬇️ <u>Automatically</u> retrieve translations during deploy</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>⌨️  Code please.</h2>
+          <img src="https://media.giphy.com/media/3o7TKoU32DEAZq6MLe/giphy.gif" />
+        </section>
+
+        <section>
+          <h2>Symfony component FTW!</h2>
+          <pre><code class="bash">
+composer require symfony/translation
+          </code></pre>
+          <pre><code class="php">
+use Symfony\Component\Translation\Translator;
+
+$translator = new Translator('fr_FR');
+$translator->addResource('array', [
+    'a_beer_please' => 'Une bière s\'il vous plaît',
+], 'fr_FR');
+
+echo $translator->trans('a_beer_please');
+// « Une bière s'il vous plaît »
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Lot of loaders</h2>
+          <img src="images/symfony-loaders.png" />
+        </section>
+
+        <section>
+          <h2>symfony/translation</h2>
+          <ul>
+              <li>Supports variables</li>
+              <li>Supports ICU</li>
+              <li>Supports Fallback</li>
+              <li>Supports catalogs</li>
+              <li>Provide basic extract feature</li>
+          </ul>
+        </section>
+
+        <section>
+            <h2><u>We're missing something</u></h2>
+          <h3>How to sync translations with a SAAS solution?</h3>
+        </section>
+
+        <section>
+          <h2>php-translation FTW</h2>
+          <ul>
+              <li>💕 A github organisation dedicated to translations</li>
+              <li>🔁 Allow to sync translations with SAAS solutions</li>
+              <li>⬇️  Provide advanced extract feature</li>
+          </ul>
+
+          <br />
+          <br />
+          <small>Doc: <a href="https://php-translation.readthedocs.io/en/latest/">https://php-translation.readthedocs.io/en/latest/</a></small>
+        </section>
+
+        <section>
+          <h2>💕 Even better with Symfony</h2>
+        </section>
+
+        <section>
+          <h2>💕 Profiler integration</h2>
+          <img src="images/profiler-integration.png" width="90%" />
+        </section>
+
+        <section>
+          <h2>💕 Symfony commands</h2>
+          <img src="images/symfony-commands.png" />
+        </section>
+
+        <section>
+          <h2>& much more! 💕</h2>
+          <ul>
+              <li>✍️  Edit in place</li>
+              <li>👀 Web UI</li>
+              <li>🎩 Auto translate</li>
+          </ul>
+        </section>
+
+        <section>
+          <img src="https://media.giphy.com/media/KYElw07kzDspaBOwf9/giphy.gif" width="100%" />
+        </section>
+
+        <section>
+          <h2>Translating a <span class="fragment highlight-red">monolingual</span> application</h2>
+          <p>💕 AFUP - February, 2020 💕</p>
+        </section>
+
+        <section>
+          <h2>Crazy idea!</h2>
+          <img src="https://media.giphy.com/media/7ziO8WTeXJCGZlq4mm/giphy.gif" width="100%" />
+        </section>
+
+        <section>
+          <h2>🙋 Who work on a monolingual app?</h2>
+          <h2 class="fragment">🙋 Without translations?</h2>
+        </section>
+
+        <section>
+            <blockquote>
+                "Can you change the translation in the footer please?"
+            </blockquote>
+            <br />
+            <blockquote class="fragment">
+                "There's a typo in the subscription funnel, could you correct it?"
+            </blockquote>
+        </section>
+
+        <section>
+            <pre><code class="bash">
+git commit -m 'Correct typo translation'
+git push origin fix-typo
+            </code></pre>
+            <ul>
+                <li class="fragment">➕ Create a PR</li>
+                <li class="fragment">⏲️  Wait for tests</li>
+                <li class="fragment">⏲️  Wait for review</li>
+                <li class="fragment">⏲️  Merge your PR</li>
+                <li class="fragment">🎉 Deploy</li>
+            </ul>
+
+            <p class="fragment">
+                And sometimes, there is an issue to deal with...
+            </p>
+        </section>
+
+        <section>
+          <img src="https://media.giphy.com/media/xkPyw3UXrSGAp4UBTZ/giphy.gif" width="90%" />
+        </section>
+
+        <section>
+          <h2>Set up a translation workflow!</h2>
+            <ul>
+                <li class="fragment">🎉 Devs are not blockers / bored anymore.</li>
+                <li class="fragment">🎉 It's easier / quicker for anyone to update translations.</li>
+                <li class="fragment">🎉 It's a first step done for G11N.</li>
+            </ul>
+        </section>
+
+        <section>
+          <h2>Use translations!</h2>
+          <img src="https://media.giphy.com/media/nFFguNjdeotwc/giphy.gif" width="100%" />
+          <br />
+        </section>
+
+        <section style="text-align: left">
+          <h1>THE END</h1>
+          Questions then beers! 🍻
+        </section>
+
+        <!--
+        <section>
+          <p class="fragment grow">grow</p>
+          <p class="fragment shrink">shrink</p>
+          <p class="fragment fade-out">fade-out</p>
+          <p class="fragment fade-up">fade-up (also down, left and right!)</p>
+          <p class="fragment fade-in-then-out">fades in, then out when we move to the next step</p>
+          <p class="fragment fade-in-then-semi-out">fades in, then obfuscate when we move to the next step</p>
+          <p class="fragment highlight-current-blue">blue only once</p>
+          <p class="fragment highlight-red">highlight-red</p>
+          <p class="fragment highlight-green">highlight-green</p>
+          <p class="fragment highlight-blue">highlight-blue</p>
+        </section>
+        -->
+      </div>
+    </div>
+
+    <script src="js/reveal.js"></script>
+
+    <script>
+      Reveal.initialize({
+        hash: false,
+        dependencies: [
+          { src: 'plugin/highlight/highlight.js' }
+        ]
+      });
+    </script>
+  </body>
+</html>
